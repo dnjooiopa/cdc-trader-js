@@ -5,7 +5,12 @@ class Trader {
   #balance;
 
   constructor(apiKey, secret) {
-    this.#binance = new ccxt.binance({ apiKey, secret });
+    this.#binance = new ccxt.binance({
+      options: {
+        adjustForTimeDifference: true,
+      },
+      enableRateLimit: true, apiKey, secret
+    });
     this.#balance = {};
   }
 
