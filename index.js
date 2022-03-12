@@ -12,12 +12,20 @@ const options = {
 
 const client = mqtt.connect(options);
 
-client.on('connect', function () {
-  console.log('🟢 Connected');
+client.on('connect', () => {
+  console.log('🟢 Connected to MQTT host');
 });
 
-client.on('error', function (error) {
+client.on('error', (error) => {
   console.log(error);
+});
+
+client.on('disconnect', () => {
+  console.log('🔴 Disconnected from MQTT host');
+});
+
+client.on('reconnect', () => {
+  console.log('🟡 Reconnecting to MQTT host');
 });
 
 client.subscribe('cdc/signal');
