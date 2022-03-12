@@ -40,6 +40,10 @@ class Trader {
     return await this.#binance.createMarketOrder(symbol, 'sell', amount);
   }
 
+  checkIfCoinExists(name) {
+    return name in this.#balance;
+  }
+
 }
 
 module.exports.Trader = Trader;
