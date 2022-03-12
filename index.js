@@ -34,7 +34,6 @@ client.on('message', async function (topic, message) {
     await trader.update();
 
     for (const signal of signals) {
-      console.log(signal);
       try {
         if (signal['order'] === 'sell') {
           const coinName = signal['asset_name'].toUpperCase();
