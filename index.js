@@ -44,13 +44,13 @@ client.on('message', async function (topic, message) {
     for (const signal of signals) {
       try {
         if (signal['order'] === 'sell') {
-          const coinName = signal['asset_name'].toUpperCase();
+          const coinName = signal['name'].toUpperCase();
 
           if (!trader.checkIfCoinExists(coinName)) {
             continue;
           }
 
-          const pairName = signal['pair_name'].toUpperCase();
+          const pairName = signal['pair'].toUpperCase();
           const symbol = `${coinName}/${pairName}`;
 
           const coinValue = await trader.getValue(symbol);
