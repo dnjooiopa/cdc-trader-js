@@ -1,6 +1,7 @@
 const mqtt = require('mqtt');
 const { config } = require('./config');
 const { Trader } = require('./trader');
+const { log } = require('./util');
 
 const options = {
   host: config.MQTT_HOST,
@@ -13,29 +14,28 @@ const options = {
 const client = mqtt.connect(options);
 
 client.on('connect', () => {
-  console.log('🟢 Connected to MQTT host');
+  log('🟢 Connected to MQTT host');
 });
 
 client.on('error', (error) => {
-  console.log(error);
+  console.log(getLocaleString(), ': 🔴 MQTT error:', error.message);
+  log(`🔴 MQTT error: ${error.message}`);
 });
 
 client.on('disconnect', () => {
-  console.log('🔴 Disconnected from MQTT host');
+  log('🔴 Disconnected from MQTT host');
 });
 
 client.on('reconnect', () => {
-  console.log('🟡 Reconnecting to MQTT host');
+  log('🟡 Reconnecting to MQTT host');
 });
 
 client.subscribe('cdc/signal');
 
 client.on('message', async function (topic, message) {
-  console.log('------------------------------------------------');
-  console.log('✅ Message received');
-  console.log('Time:', new Date());
+  log('✅ Message received');
   try {
-    console.log('Data:', topic, message.toString());
+    console.log(`${topic} : ${message.toString()}`);
     signals = JSON.parse(message.toString());
 
     const trader = new Trader(config.API_KEY, config.SECRET);
@@ -60,18 +60,13 @@ client.on('message', async function (topic, message) {
 
           const amount = trader.getAmount(coinName);
           result = await trader.sell(symbol, amount);
-          console.log(`🟢 Successfully ${result['info']['side']} ${result['info']['symbol']} : ${result['info']['cummulativeQuoteQty']}$`);
+          log(`🟢 Successfully ${result['info']['side']} ${result['info']['symbol']} : ${result['info']['cummulativeQuoteQty']}$`);
         }
       } catch (err) {
-        console.log('🔴 Trading error:', err.message);
+        log('🔴 Trading error:', err.message);
       }
     }
-
-
-
   } catch (err) {
-    console.log('🔴 Could not initialize trader:', err.message);
+    log('🔴 Could not initialize trader:', err.message);
   }
-
-
 });
