@@ -3,6 +3,7 @@ const ccxt = require('ccxt');
 class Trader {
   #binance;
   #balance;
+  #orders;
 
   constructor(apiKey, secret) {
     this.#binance = new ccxt.binance({
@@ -12,6 +13,7 @@ class Trader {
       enableRateLimit: true, apiKey, secret
     });
     this.#balance = {};
+    this.#orders = {};
   }
 
   async getBalance() {
@@ -27,8 +29,16 @@ class Trader {
     return (ticker['bid'] + ticker['ask']) / 2;
   }
 
-  getAmount(name) {
+  getTotalAmount(name) {
     return this.#balance[name]['total'];
+  }
+
+  getFreeAmount(name) {
+    return this.#balance[name]['free'];
+  }
+
+  getUsedAmount(name) {
+    return this.#balance[name]['used'];
   }
 
   async getValue(symbol) {
@@ -51,4 +61,4 @@ class Trader {
 
 }
 
-module.exports.Trader = Trader;
+module.exports = Trader;
