@@ -63,6 +63,10 @@ class Trader {
     return await this.#binance.fetchOpenOrders(symbol);
   }
 
+  async cancelOrder(id, symbol) {
+    return await this.#binance.cancelOrder(id, symbol);
+  }
+
 }
 
 module.exports = Trader;

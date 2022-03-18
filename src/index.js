@@ -1,6 +1,6 @@
 const mqtt = require('mqtt');
-const { config } = require('./config');
-const { Trader } = require('./trader');
+const config = require('./config');
+const Trader = require('./trader');
 const { log } = require('./util');
 
 const options = {
@@ -53,19 +53,29 @@ client.on('message', async function (topic, message) {
           const pairName = signal['pair'].toUpperCase();
           const symbol = `${coinName}/${pairName}`;
 
-          const coinValue = await trader.getValue(symbol);
+          const price = await trader.getPrice(symbol);
+
+          const usedValue = price * trader.getUsedAmount(coinName);
+          if (usedValue >= 10) {
+            const openOrders = await trader.getOpenOrders(symbol);
+            const cancels = openOrders.map(o => trader.cancelOrder(o.id, symbol));
+            await Promise.all(cancels);
+          }
+
+          const coinValue = price * trader.getTotalAmount(coinName);
           if (coinValue <= 10) {
             continue;
           }
 
-          const amount = trader.getAmount(coinName);
+          const amount = trader.getTotalAmount(coinName);
           result = await trader.sell(symbol, amount);
           log(`🟢 Successfully ${result['info']['side']} ${result['info']['symbol']} : ${result['info']['cummulativeQuoteQty']}$`);
         }
       } catch (err) {
-        log('🔴 Trading error:', err.message);
+        log('🔴 Trading error:', err);
       }
     }
+    await trader.update();
   } catch (err) {
     log('🔴 Could not initialize trader:', err.message);
   }
