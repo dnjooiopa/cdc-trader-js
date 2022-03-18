@@ -59,6 +59,10 @@ class Trader {
     return name in this.#balance;
   }
 
+  async getOpenOrders(symbol) {
+    return await this.#binance.fetchOpenOrders(symbol);
+  }
+
 }
 
 module.exports = Trader;

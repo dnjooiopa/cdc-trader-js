@@ -9,6 +9,10 @@ const config = require('../src/config');
   console.log('total:', trader.getTotalAmount('KNC'));
   console.log('free:', trader.getFreeAmount('KNC'));
   console.log('used:', trader.getUsedAmount('KNC'));
+
+  console.log('🧪 Trader.getOrderBook');
+  const btcOpenOrders = await trader.getOpenOrders('BTC/BUSD');
+  btcOpenOrders.map(btcOpenOrders);
 })();
 
 
