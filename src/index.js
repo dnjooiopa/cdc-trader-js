@@ -18,7 +18,6 @@ client.on('connect', () => {
 });
 
 client.on('error', (error) => {
-  console.log(getLocaleString(), ': 🔴 MQTT error:', error.message);
   log(`🔴 MQTT error: ${error.message}`);
 });
 
